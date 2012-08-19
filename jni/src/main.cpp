@@ -17,10 +17,15 @@
 
 //BEGIN_INCLUDE(all)
 #include <CEGUI/CEGUI.h>
+#include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/RendererModules/OpenGLES/Renderer.h>
 #include <jni.h>
 #include <errno.h>
 
+#include <stdio.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <string.h>
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
@@ -30,6 +35,51 @@
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+void initialiseResourceGroupDirectories()
+{
+    // initialise the required dirs for the DefaultResourceProvider
+    CEGUI::DefaultResourceProvider* rp =
+        static_cast<CEGUI::DefaultResourceProvider*>
+            (CEGUI::System::getSingleton().getResourceProvider());
+
+    const char* dataPathPrefix = "/mnt/sdcard/cegui";
+    char resourcePath[PATH_MAX];
+
+    // for each resource type, set a resource group directory
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "schemes/");
+    rp->setResourceGroupDirectory("schemes", resourcePath);
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "imagesets/");
+    rp->setResourceGroupDirectory("imagesets", resourcePath);
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "fonts/");
+    rp->setResourceGroupDirectory("fonts", resourcePath);
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "layouts/");
+    rp->setResourceGroupDirectory("layouts", resourcePath);
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "looknfeel/");
+    rp->setResourceGroupDirectory("looknfeels", resourcePath);
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "lua_scripts/");
+    rp->setResourceGroupDirectory("lua_scripts", resourcePath);
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "xml_schemas/");
+    rp->setResourceGroupDirectory("schemas", resourcePath);   
+    sprintf(resourcePath, "%s/%s", dataPathPrefix, "animations/");
+    rp->setResourceGroupDirectory("animations", resourcePath);   
+}
+
+//----------------------------------------------------------------------------//
+void initialiseDefaultResourceGroups()
+{
+    // set the default resource groups to be used
+    CEGUI::ImageManager::setImagesetDefaultResourceGroup("imagesets");
+    CEGUI::Font::setDefaultResourceGroup("fonts");
+    CEGUI::Scheme::setDefaultResourceGroup("schemes");
+    CEGUI::WidgetLookManager::setDefaultResourceGroup("looknfeels");
+    CEGUI::WindowManager::setDefaultResourceGroup("layouts");
+    CEGUI::ScriptModule::setDefaultResourceGroup("lua_scripts");
+    CEGUI::AnimationManager::setDefaultResourceGroup("animations");
+    // setup default group for validation schemas
+    CEGUI::XMLParser* parser = CEGUI::System::getSingleton().getXMLParser();
+    if (parser->isPropertyPresent("SchemaDefaultResourceGroup"))
+        parser->setProperty("SchemaDefaultResourceGroup", "schemas");
+}
 
 /**
  * Our saved state data.
@@ -72,9 +122,9 @@ static int engine_init_display(struct engine* engine) {
      */
     const EGLint attribs[] = {
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-            EGL_BLUE_SIZE, 5,
-            EGL_GREEN_SIZE, 6,
-            EGL_RED_SIZE, 5,
+            EGL_BLUE_SIZE, 8,
+            EGL_GREEN_SIZE, 8,
+            EGL_RED_SIZE, 8,
             EGL_DEPTH_SIZE, 1, 
             EGL_NONE
     };
@@ -121,6 +171,10 @@ static int engine_init_display(struct engine* engine) {
     LOGI("+++++++++++++++++++++++++++++++++++++++++++++++");
     LOGI((const char*)glGetString(GL_VERSION));
     LOGI("+++++++++++++++++++++++++++++++++++++++++++++++");
+
+    LOGI("+++++++++++++++++++++++++++++++++++++++++++++++");
+    LOGI((const char*)glGetString(GL_EXTENSIONS));
+    LOGI("+++++++++++++++++++++++++++++++++++++++++++++++");
     engine->display = display;
     engine->context = context;
     engine->surface = surface;
@@ -129,11 +183,29 @@ static int engine_init_display(struct engine* engine) {
     engine->state.angle = 0;
     
     // Initialize GL state.
-    glEnable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-    glShadeModel(GL_SMOOTH);
-    glViewport(0, 0, 100, 100);
-    CEGUI::OpenGLESRenderer::bootstrapSystem(CEGUI::OpenGLESRenderer::TTT_PBUFFER, 99990);
+    glViewport(0, 0, w, h);
+    CEGUI::OpenGLESRenderer::bootstrapSystem();
+    
+    initialiseResourceGroupDirectories();
+    initialiseDefaultResourceGroups();
+
+    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
+    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+    CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
+    CEGUI::Window* root = winMgr.createWindow("DefaultWindow", "root");
+
+    CEGUI::Window* fw = root->createChild("TaharezLook/FrameWindow");
+    fw->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25, 0)));
+    fw->setSize(CEGUI::USize(CEGUI::UDim(0.5, 0), CEGUI::UDim(0.5, 0)));
+    fw->setText("OpenGL ES 1 Tes1");
+    CEGUI::PushButton* btn = static_cast<CEGUI::PushButton*>(winMgr.createWindow("TaharezLook/Button", "AddColButton"));
+    fw->addChild(btn);
+    btn->setPosition(CEGUI::UVector2(cegui_reldim(0.81f), cegui_reldim( 0.32f)));
+    btn->setSize(CEGUI::USize(cegui_reldim(0.15f), cegui_reldim( 0.2f)));
+    btn->setText("Push ME!");
+    root->addChild(winMgr.loadLayoutFromFile("TabControlDemo.layout"));
+
+    CEGUI::System::getSingleton().getDefaultGUIContext().setRootWindow(root);
 
     return 0;
 }
@@ -146,8 +218,6 @@ static void engine_draw_frame(struct engine* engine) {
         // No display.
         return;
     }
-
-    glClearColor(0.0, 1.0, 0.0, 1.0);
 
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -181,9 +251,14 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-        engine->animating = 1;
         engine->state.x = AMotionEvent_getX(event, 0);
         engine->state.y = AMotionEvent_getY(event, 0);
+
+        CEGUI::System::getSingleton().getDefaultGUIContext().injectMousePosition(engine->state.x, engine->state.y);
+        CEGUI::MouseButton btn;
+        btn = CEGUI::LeftButton;
+        CEGUI::System::getSingleton().getDefaultGUIContext().injectMouseButtonDown(btn);
+
         return 1;
     }
     return 0;
@@ -276,7 +351,7 @@ void android_main(struct android_app* state) {
         // If not animating, we will block forever waiting for events.
         // If animating, we loop until all events are read, then continue
         // to draw the next frame of animation.
-        while ((ident=ALooper_pollAll(engine.animating ? 0 : -1, NULL, &events,
+        while ((ident=ALooper_pollAll(0, NULL, &events,
                 (void**)&source)) >= 0) {
 
             // Process this event.
