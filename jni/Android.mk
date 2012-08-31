@@ -25,7 +25,7 @@ LOCAL_SRC_FILES := src/main.cpp \
 LOCAL_LDFLAGS	:= -Wl,-start-group
 
 
-LOCAL_LDLIBS    :=  -llog  -landroid -lEGL -lGLESv1_CM -lfreetype 
+LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv1_CM -lfreetype 
 
 LOCAL_CPP_FEATURES := rtti exceptions
 
@@ -33,6 +33,7 @@ LOCAL_STATIC_LIBRARIES := CEGUIOpenGLESRenderer CEGUIBase  CEGUICoreWindowRender
 
 LOCAL_SHARED_LIBRARIES := iconv tinyxml 
 include $(BUILD_SHARED_LIBRARY)
+
 $(call import-module,android/native_app_glue)
 $(call import-module,cegui-android-libs/cegui-base)
 $(call import-module,cegui-android-libs/opengles)

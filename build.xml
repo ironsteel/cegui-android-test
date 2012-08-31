@@ -90,7 +90,7 @@
             <arg value="-a" />
             <arg value="android.intent.action.MAIN" />
             <arg value="-n" />
-            <arg value="${manifest.package}/.OgreActivity" />
+            <arg value="${manifest.package}/.CEGUITestActivity" />
         </exec>
     </target>
 

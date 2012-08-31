@@ -1,10 +1,8 @@
-package org.ogre.sample;
+package uk.org.cegui;
 
 import android.app.NativeActivity;
 
-public class OgreActivity extends NativeActivity {
-
-	
+public class CEGUITestActivity extends NativeActivity {
 	static {
 		System.loadLibrary("iconv");
 		System.loadLibrary("tinyxml");
