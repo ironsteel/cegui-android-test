@@ -1,0 +1,16 @@
+<project name="CEGUIAndroidTest" default="help">
+    <target name="start">
+        <xpath input="AndroidManifest.xml"
+                expression="/manifest/@package" output="manifest.package" />
+        <exec executable="${adb}" failonerror="true">
+            <arg line="${adb.device.arg}" />
+            <arg value="shell" />
+            <arg value="am" />
+            <arg value="start" />
+            <arg value="-a" />
+            <arg value="android.intent.action.MAIN" />
+            <arg value="-n" />
+            <arg value="${manifest.package}/.CEGUITestActivity" />
+        </exec>
+    </target>
+</project>
