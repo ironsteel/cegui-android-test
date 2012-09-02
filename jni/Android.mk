@@ -18,9 +18,10 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := native-activity
 LOCAL_C_INCLUDES := include \
-				$(CEGUI_ROOT)/include \
+        $(CEGUI_ROOT)/include
 
 LOCAL_SRC_FILES := src/main.cpp \
+        src/CEGUIAndroidLogger.cpp        
 
 LOCAL_LDFLAGS	:= -Wl,-start-group
 

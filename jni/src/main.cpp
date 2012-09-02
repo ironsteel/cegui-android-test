@@ -32,6 +32,7 @@
 #include <android/sensor.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include "CEGUIAndroidLogger.h"
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
@@ -184,6 +185,9 @@ static int engine_init_display(struct engine* engine) {
     
     // Initialize GL state.
     glViewport(0, 0, w, h);
+    
+    new AndroidLogger();
+    
     CEGUI::OpenGLESRenderer::bootstrapSystem();
     
     initialiseResourceGroupDirectories();
@@ -362,6 +366,7 @@ void android_main(struct android_app* state) {
             // Check if we are exiting.
             if (state->destroyRequested != 0) {
                 CEGUI::OpenGLESRenderer::destroySystem();
+                delete AndroidLogger::getSingletonPtr();
                 engine_term_display(&engine);
                 return;
             }
