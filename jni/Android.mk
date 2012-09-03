@@ -21,7 +21,11 @@ LOCAL_C_INCLUDES := include \
         $(CEGUI_ROOT)/include
 
 LOCAL_SRC_FILES := src/main.cpp \
-        src/CEGUIAndroidLogger.cpp        
+        src/CEGUITestApplication.cpp \
+        src/GLESApplication.cpp \
+        src/CEGUIAndroidLogger.cpp \
+        
+        
 
 LOCAL_LDFLAGS	:= -Wl,-start-group
 
