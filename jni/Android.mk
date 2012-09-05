@@ -24,10 +24,13 @@ LOCAL_SRC_FILES := src/main.cpp \
         src/CEGUITestApplication.cpp \
         src/GLESApplication.cpp \
         src/CEGUIAndroidLogger.cpp \
+        src/AndroidResourceProvider.cpp
         
         
 
 LOCAL_LDFLAGS	:= -Wl,-start-group
+
+LOCAL_CFLAGS := -DDEBUG 
 
 
 LOCAL_LDLIBS    := -llog -landroid -lEGL -lGLESv1_CM -lfreetype 
