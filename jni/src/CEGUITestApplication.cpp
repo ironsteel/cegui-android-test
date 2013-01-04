@@ -1,9 +1,8 @@
 #include "CEGUITestApplication.h"
 #include "AndroidResourceProvider.h"
+
 void CEGUITestApplication::positInit(android_app *app)
 {
-    
-    
     glViewport(0, 0, screenWidth, screenHeight);
 
     new AndroidLogger();
@@ -12,21 +11,28 @@ void CEGUITestApplication::positInit(android_app *app)
     initialiseResourceGroupDirectories();
     initialiseDefaultResourceGroups();
 
-    CEGUI::SchemeManager::getSingleton().createFromFile("TaharezLook.scheme");
-    CEGUI::System::getSingleton().getDefaultGUIContext().getMouseCursor().setDefaultImage("TaharezLook/MouseArrow");
+  
+    
+    CEGUI::SchemeManager::getSingleton().createFromFile("VanillaSkin.scheme");
+    
+    CEGUI::Font *f = &CEGUI::FontManager::getSingleton().createFreeTypeFont("custom", 23, true, "DejaVuSans.ttf");
+    CEGUI::System::getSingleton().getDefaultGUIContext().setDefaultFont(f);
+    
     CEGUI::WindowManager& winMgr(CEGUI::WindowManager::getSingleton());
     CEGUI::Window* root = winMgr.createWindow("DefaultWindow", "root");
 
-    CEGUI::Window* fw = root->createChild("TaharezLook/FrameWindow");
+    CEGUI::Window* fw = root->createChild("Vanilla/FrameWindow");
     fw->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25, 0)));
     fw->setSize(CEGUI::USize(CEGUI::UDim(0.5, 0), CEGUI::UDim(0.5, 0)));
     fw->setText("OpenGL ES 1 Tes1");
-    CEGUI::PushButton* btn = static_cast<CEGUI::PushButton*>(winMgr.createWindow("TaharezLook/Button", "AddColButton"));
+        
+    
+    CEGUI::PushButton* btn = static_cast<CEGUI::PushButton*>(winMgr.createWindow("Vanilla/Button", "AddColButton"));
     fw->addChild(btn);
-    btn->setPosition(CEGUI::UVector2(cegui_reldim(0.81f), cegui_reldim( 0.32f)));
-    btn->setSize(CEGUI::USize(cegui_reldim(0.15f), cegui_reldim( 0.2f)));
+    btn->setPosition(CEGUI::UVector2(cegui_reldim(0.5f), cegui_reldim(0.32f)));
+    btn->setSize(CEGUI::USize(cegui_reldim(0.5f), cegui_reldim( 0.2f)));
     btn->setText("Push ME!");
-    root->addChild(winMgr.loadLayoutFromFile("TabControlDemo.layout"));
+    
 
     btn->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&CEGUITestApplication::buttonWasPushed, this)); 
     
@@ -47,10 +53,12 @@ void CEGUITestApplication::terminateWindow(android_app *app)
 
 void CEGUITestApplication::onPause(android_app *app)
 {
+	
 }
 
 void CEGUITestApplication::onResume(android_app *app)
 {
+	
 }
 
 void CEGUITestApplication::onTouchDown(float x, float y)
@@ -119,5 +127,5 @@ void CEGUITestApplication::initialiseDefaultResourceGroups()
 
 bool CEGUITestApplication::buttonWasPushed(const EventArgs &e)
 {
-    
+	LOGI("BUTTON WAS PRESSED");
 }

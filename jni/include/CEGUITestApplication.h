@@ -8,13 +8,14 @@
 #include <CEGUI/CEGUI.h>
 #include <CEGUI/widgets/PushButton.h>
 #include <CEGUI/RendererModules/OpenGLES/Renderer.h>
+#include <CEGUI/FontManager.h>
 
 
 class CEGUITestApplication : public GLESApplication
 {
 public:
-    CEGUITestApplication(android_app *app) : GLESApplication(app) {}
-    ~CEGUITestApplication() {}
+    CEGUITestApplication(android_app *app) : GLESApplication(app) { LOGI("APPLICATION CREATED"); }
+    ~CEGUITestApplication() { LOGI("APPLICATION DESTROYED");}
     
     
 protected:
