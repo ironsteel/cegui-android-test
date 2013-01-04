@@ -18,8 +18,8 @@ LOCAL_CFLAGS    += -fexceptions -frtti -D___ANDROID___ -DANDROID
 
 LOCAL_LDFLAGS	:= -Wl,-start-group
 LOCAL_LDLIBS    := -L$(CEGUI_ROOT)/dependencies/lib/$(TARGET_ARCH_ABI) 
-LOCAL_LDLIBS    += -L$(CEGUI_ROOT)/systemlibs/$(TARGET_ARCH_ABI) 
-LOCAL_LDLIBS    += -L$(CEGUI_ROOT)/lib 
+LOCAL_LDLIBS    += -L$(CEGUI_ROOT)/android/systemlibs/$(TARGET_ARCH_ABI) 
+LOCAL_LDLIBS    += -L$(CEGUI_ROOT)/android/lib 
 LOCAL_LDLIBS    += -L$(NDK_ROOT)/sources/cxx-stl/gnu-libstdc++/libs/$(TARGET_ARCH_ABI)
 LOCAL_LDLIBS    += -llog -landroid -lEGL -lGLESv1_CM
 LOCAL_LDLIBS    += -lCEGUIOpenGLESRenderer_Static -lCEGUIBase_Static -lCEGUICoreWindowRendererSet_Static -lCEGUICommonDialogs_Static -lCEGUITinyXMLParser_Static -lCEGUIFreeImageImageCodec_Static 
