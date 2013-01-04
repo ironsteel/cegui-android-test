@@ -18,6 +18,7 @@
                     libraryPackagesRefid="project.library.packages"
                     previousBuildType="${build.last.target}"
                     buildType="${build.target}"
+                    libraryRFileRefid="project.library.bin.r.file.path"
                     ignoreAssets="${aapt.ignore.assets}">
                 <res path="${out.res.absolute.dir}" />
                 <res path="${resource.absolute.dir}" />
