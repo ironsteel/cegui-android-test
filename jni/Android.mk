@@ -4,7 +4,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := native-activity
 LOCAL_C_INCLUDES := include \
-        $(CEGUI_ROOT)/cegui/include
+        $(CEGUI_ROOT)/cegui/include \
+        $(CEGUI_ROOT)/android/cegui/include
 
 LOCAL_SRC_FILES := src/main.cpp \
         src/CEGUITestApplication.cpp \
