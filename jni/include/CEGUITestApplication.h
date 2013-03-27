@@ -17,7 +17,11 @@ public:
     CEGUITestApplication(android_app *app) : GLESApplication(app) { LOGI("APPLICATION CREATED"); }
     ~CEGUITestApplication() { LOGI("APPLICATION DESTROYED");}
     
-    
+public:
+	bool handle_ItemDropped(const CEGUI::EventArgs &args);
+	void subscribeEvents();
+	bool handle_CloseButton(const CEGUI::EventArgs &);
+	
 protected:
     void drawOneFrame(double ellapsedTime);
     void positInit(android_app *app);
@@ -33,7 +37,6 @@ protected:
     void initialiseResourceGroupDirectories();
     void initialiseDefaultResourceGroups();
     
-    bool buttonWasPushed(const CEGUI::EventArgs& e);
     
 };
 
